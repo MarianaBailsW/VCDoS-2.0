@@ -22,12 +22,13 @@ try:
 	import aioconsole
 except ImportError:
 	os.system("pip install aioconsole")
-try:
-	import uvloop
-except ImportError:
-	os.system("pip install uvloop")
-uvloop.install()
-asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+if os.name != "nt":
+	try:
+		import uvloop
+	except ImportError:
+		os.system("pip install uvloop")
+	uvloop.install()
+	asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 os.system("cls" if os.name == "nt" else "clear")
 ########################################################
 class coloring:
