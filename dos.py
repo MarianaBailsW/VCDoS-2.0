@@ -9,7 +9,6 @@ import os
 from datetime import datetime
 import asyncio
 import itertools
-import getpass
 try:
 	import aiohttp
 except ImportError:
